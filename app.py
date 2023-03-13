@@ -1,9 +1,18 @@
 import streamlit as st
 import os
+from test import save
 from streamlit_img_label import st_img_label
 from streamlit_img_label.manage import ImageManager, ImageDirManager
 
+def download_image_from_s3(bucket_name, object_key, local_file_path):
+    print('a')
+
 def run(img_dir, labels):
+    save("img003713.jpg")
+    # set S3 bucket and object keys
+    # bucket_name = 'masterprojectbucket'
+    # object_key = 'ReportImages/'
+    # print(st.experimental_get_query_params().get('image')[0])
     st.set_option("deprecation.showfileUploaderEncoding", False)
     idm = ImageDirManager(img_dir)
 
@@ -105,5 +114,5 @@ def run(img_dir, labels):
                 im.set_annotation(i, select_label)
 
 if __name__ == "__main__":
-    custom_labels = ["", "dog", "cat"]
+    custom_labels = ["black_core", "crack", "finger", "star_crack", "thick_line", "corner", "fragment", "scratch", "printing_error", "horizontal_dislocation", "vertical_dislocation", "short_circuit"]
     run("img_dir", custom_labels)

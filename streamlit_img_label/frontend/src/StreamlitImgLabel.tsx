@@ -6,6 +6,7 @@ import {
 } from "streamlit-component-lib"
 import { fabric } from "fabric"
 import styles from "./StreamlitImgLabel.module.css"
+import { useParams } from "react-router-dom"
 
 interface RectProps {
     top: number
