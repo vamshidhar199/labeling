@@ -1,18 +1,25 @@
 import streamlit as st
 import os
+import io
 from test import save
+from PIL import Image
+import boto3
 from streamlit_img_label import st_img_label
 from streamlit_img_label.manage import ImageManager, ImageDirManager
 
-def download_image_from_s3(bucket_name, object_key, local_file_path):
-    print('a')
+def fetch_image_and_save_to_folder(directory_path, image_name, save_path):
+    try:
+        s3_object = boto3.client("s3").get_object(Bucket="masterprojectbucket", Key=f"{directory_path}/{image_name}")
+        image_bytes = s3_object["Body"].read()
+        image = Image.open(io.BytesIO(image_bytes))
+        image.save(os.path.join(save_path, image_name))
+        print(f"Image '{image_name}' saved to '{save_path}'")
+    except Exception as e:
+        print(f"Error fetching and saving image: {e}")
 
 def run(img_dir, labels):
-    save("img003713.jpg")
-    # set S3 bucket and object keys
-    # bucket_name = 'masterprojectbucket'
-    # object_key = 'ReportImages/'
-    # print(st.experimental_get_query_params().get('image')[0])
+    print(st.experimental_get_query_params().get('image')[0])
+    fetch_image_and_save_to_folder("ReportImages", st.experimental_get_query_params().get('image')[0], "img_dir")
     st.set_option("deprecation.showfileUploaderEncoding", False)
     idm = ImageDirManager(img_dir)
 
@@ -21,13 +28,23 @@ def run(img_dir, labels):
         st.session_state["annotation_files"] = idm.get_exist_annotation_files()
         st.session_state["image_index"] = 0
     else:
-        idm.set_all_files(st.session_state["files"])
+        idm.set_all_files(idm.get_all_files())
         idm.set_annotation_files(st.session_state["annotation_files"])
     
     def refresh():
         st.session_state["files"] = idm.get_all_files()
         st.session_state["annotation_files"] = idm.get_exist_annotation_files()
         st.session_state["image_index"] = 0
+    
+    # def get_image_from_s3(directory_path, image_name):
+    #     try:
+    #         s3_object = boto3.client("s3").get_object(Bucket="masterprojectbucket", Key=f"{directory_path}/{image_name}")
+    #         image_bytes = s3_object["Body"].read()
+    #         image = Image.open(io.BytesIO(image_bytes))
+    #         return image
+    #     except Exception as e:
+    #         st.error(f"Error retrieving image: {e}")
+    #         return None
 
     def next_image():
         image_index = st.session_state["image_index"]
@@ -80,6 +97,7 @@ def run(img_dir, labels):
 
     # Main content: annotate images
     img_file_name = idm.get_image(st.session_state["image_index"])
+    # img_file_name = "img003712.jpg"
     img_path = os.path.join(img_dir, img_file_name)
     im = ImageManager(img_path)
     img = im.get_img()

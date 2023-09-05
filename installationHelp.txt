@@ -1,3 +1,5 @@
 pip install streamlit-img-label
  pip install boto3 botocore
 streamlit run app.py
+
+and follow boto3 installation steps to setup aws credentials
