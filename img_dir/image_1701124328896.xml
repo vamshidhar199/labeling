@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<annotation>
+   <folder>img_dir</folder>
+   <filename>image_1701124328896.jpg</filename>
+   <path>img_dir\image_1701124328896.jpg</path>
+   <source>
+      <database>Unknown</database>
+   </source>
+   <size>
+      <width>960</width>
+      <height>540</height>
+      <depth>3</depth>
+   </size>
+   <segmented>0</segmented>
+</annotation>
